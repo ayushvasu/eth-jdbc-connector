@@ -187,7 +187,10 @@ public class EthStatement implements BlkchnStatement {
                 String tableName = table.getChildType(IdentifierNode.class, 0).getValue();
                 DataFrame dataframe = new EthQueryExecutor(logicalPlan, connection.getWeb3jClient(), connection.getInfo())
                             .executeQuery();
+                long start_result = System.currentTimeMillis();
                 queryResultSet = new EthResultSet(dataframe, rSetType, rSetConcurrency, tableName);
+                System.out.println("\t\t\tResultSet :: "+ (System.currentTimeMillis() - start_result)+"ms");
+
                 LOGGER.info("Exiting from executeQuery Block");
                 return queryResultSet;
         }

@@ -29,8 +29,9 @@ public class BenchMarkEthDriver {
             for (Object qmap : queryList) {
                 for (Object qtype : ((Map) qmap).keySet()) {
                     System.out.println(qtype + " for iteration " + (ittr + 1));
-                    //int i = 0;
+                    int i = 0;
                     for (Object query : (List) ((HashMap) qmap).get((String) qtype)) {
+                        System.out.println("=========================== Block Range of :: "+blockSize[i++]+" Blocks===================================");
                         //System.out.println(blockSize[i++]+"\t\t"+query);
                         runQuery((String) query);
                     }
@@ -96,8 +97,10 @@ public class BenchMarkEthDriver {
             Long qt = (end - start);
             //System.out.println("\t\tStart Time :: "+start+" end Time :: "+end+" ,duration "+(end - start));
             //System.out.println("============================================================================\n\n");
-            System.out.println(qt);
-            stmt.close();
+            System.out.println("\t\tQuery Execution End at "+end);
+            System.out.println("Total Time :: "+qt+"ms");
+
+            //stmt.close();
             //System.out.println("Statement is close "+stmt.isClosed());
             //System.out.println("Result is close "+rs1.isClosed());
         } catch (Exception e) {
