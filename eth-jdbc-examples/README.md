@@ -72,7 +72,7 @@ Geth client system configuration
  
 Ethereum Driver Performance test with stepwise time 
 ----------
-###1- Test 1
+**1- Test 1**
 
 - **Condition**
 
@@ -340,7 +340,7 @@ Ethereum Driver Performance test with stepwise time
 
 
 
-###2- Test 2
+**2- Test 2**
 
 - **Condition**
 
@@ -650,7 +650,7 @@ Ethereum Driver Performance test with stepwise time
 
 
 
-###3- Test 3
+**3- Test 3**
 
 - **Condition**
 
