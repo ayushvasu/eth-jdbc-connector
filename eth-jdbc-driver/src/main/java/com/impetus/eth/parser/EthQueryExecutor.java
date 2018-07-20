@@ -97,18 +97,14 @@ public class EthQueryExecutor extends AbstractQueryExecutor {
     }
 
     public DataFrame executeQuery() {
-        long start = System.currentTimeMillis();
-        System.out.println("\t\tQuery Execution Start at "+start);
         physicalPlan.getWhereClause().traverse();
         if (!physicalPlan.validateLogicalPlan()) {
             throw new BlkchnException("This query can't be executed");
         }
-        long start_dataFrame = System.currentTimeMillis();
         DataFrame dataframe = getFromTable();
         if (dataframe.isEmpty()) {
             return dataframe;
         }
-        System.out.println("\t\t\tDataframe :: "+(System.currentTimeMillis() - start_dataFrame)+"ms");
         List<OrderItem> orderItems = null;
         if (logicalPlan.getQuery().hasChildType(OrderByClause.class)) {
             OrderByClause orderByClause = logicalPlan.getQuery().getChildType(OrderByClause.class, 0);
@@ -119,7 +115,6 @@ public class EthQueryExecutor extends AbstractQueryExecutor {
             limitClause = logicalPlan.getQuery().getChildType(LimitClause.class, 0);
         }
         if (logicalPlan.getQuery().hasChildType(GroupByClause.class)) {
-            long start_group = System.currentTimeMillis();
             GroupByClause groupByClause = logicalPlan.getQuery().getChildType(GroupByClause.class, 0);
             List<Column> groupColumns = groupByClause.getChildType(Column.class);
             List<String> groupByCols = groupColumns.stream()
@@ -132,15 +127,12 @@ public class EthQueryExecutor extends AbstractQueryExecutor {
             } else {
                 afterSelect = groupedDF.select(physicalPlan.getSelectItems());
             }
-            System.out.println("\t\t\tgroup by :: "+(System.currentTimeMillis() - start_group)+"ms");
             DataFrame afterOrder;
-            long start_order = System.currentTimeMillis();
             if (orderItems != null) {
                 afterOrder = afterSelect.order(orderItems);
             } else {
                 afterOrder = afterSelect;
             }
-            System.out.println("\t\t\torder by :: "+(System.currentTimeMillis() - start_order)+"ms");
             if (limitClause == null) {
                 return afterOrder;
             } else {
@@ -149,10 +141,8 @@ public class EthQueryExecutor extends AbstractQueryExecutor {
         }
         DataFrame preSelect;
         if (orderItems != null) {
-            long start_order = System.currentTimeMillis();
             preSelect = dataframe.order(orderItems);
-            System.out.println("\t\t\torder by :: "+Math.abs(start_order - System.currentTimeMillis())+"ms");
-        } else {
+            } else {
             preSelect = dataframe;
         }
         DataFrame afterOrder;
@@ -175,7 +165,6 @@ public class EthQueryExecutor extends AbstractQueryExecutor {
                 TreeNode optimizedTree = optimize(directAPIOptimizedTree);
                 finalData = execute(optimizedTree);
             } else if (physicalPlan.getWhereClause().hasChildType(DirectAPINode.class)) {
-                System.out.println("in direct API Block");
                 DirectAPINode node = physicalPlan.getWhereClause().getChildType(DirectAPINode.class, 0);
                 finalData = getDataNode(node.getTable(), node.getColumn(), node.getValue());
             } else {
